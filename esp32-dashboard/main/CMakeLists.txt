@@ -1,0 +1,19 @@
+idf_component_register(
+    SRCS
+        "main.c"
+        "mems_uart.c"
+        "ui/dashboard.c"
+        "ui/gauge_widget.c"
+        "ui/detail_screen.c"
+        "ui/settings_screen.c"
+    INCLUDE_DIRS
+        "."
+        "ui"
+    REQUIRES
+        driver
+        esp_lcd
+        esp_timer
+        freertos
+        nvs_flash
+        log
+)
