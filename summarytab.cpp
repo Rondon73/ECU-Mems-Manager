@@ -1,11 +1,14 @@
 #include "summarytab.h"
 #include <QHeaderView>
+#include <QGroupBox>
+#include <QStringList>
 
 static const QString TOOLTIP_ICON = QString::fromUtf8("\xF0\x9F\x92\xAC ");
 
 SummaryTab::SummaryTab(QWidget *parent) : QWidget(parent)
 {
-  QHBoxLayout *layout = new QHBoxLayout(this);
+  QVBoxLayout *layout = new QVBoxLayout(this);
+  QHBoxLayout *tablesLayout = new QHBoxLayout();
   m_rowCount = 0;
   m_rowsPerTable = 19;
 
@@ -23,8 +26,18 @@ SummaryTab::SummaryTab(QWidget *parent) : QWidget(parent)
     tables[i]->setEditTriggers(QTableWidget::NoEditTriggers);
     tables[i]->setSelectionMode(QTableWidget::NoSelection);
     tables[i]->setAlternatingRowColors(true);
-    layout->addWidget(tables[i]);
+    tablesLayout->addWidget(tables[i]);
   }
+  layout->addLayout(tablesLayout);
+
+  QGroupBox *aiGroup = new QGroupBox("Diagnostic assisté (IA)", this);
+  QVBoxLayout *aiLayout = new QVBoxLayout(aiGroup);
+  m_aiSuggestions = new QTextEdit(aiGroup);
+  m_aiSuggestions->setReadOnly(true);
+  m_aiSuggestions->setMinimumHeight(130);
+  m_aiSuggestions->setText("Aucune donnée ECU reçue.");
+  aiLayout->addWidget(m_aiSuggestions);
+  layout->addWidget(aiGroup);
 
   m_rowEngineRpm             = addRow("Régime moteur (tr/min)");
   m_rowCoolantTemp           = addRow("Température liquide refroid. (°C)");
@@ -271,4 +284,69 @@ void SummaryTab::updateData(mems_data *data)
   setValue(m_rowUk1C, QString::number(data->uk1C));
   setValue(m_rowDtc0, QString::number(data->dtc0));
   setValue(m_rowDtc1, QString::number(data->dtc1));
+  m_aiSuggestions->setPlainText(buildDiagnosticSuggestions(data));
+}
+
+QString SummaryTab::buildDiagnosticSuggestions(mems_data *data) const
+{
+  if (!data) return "Aucune donnée ECU reçue.";
+
+  QStringList suggestions;
+  suggestions << "Synthèse automatique basée sur les valeurs en direct :";
+
+  if (data->fault_codes & 0x01)
+    suggestions << "- Défaut capteur température LDR : vérifier sonde, connecteur et faisceau.";
+  if (data->fault_codes & 0x02)
+    suggestions << "- Défaut capteur température air admission : contrôler sonde IAT et câblage.";
+  if (data->fault_codes & 0x04)
+    suggestions << "- Défaut circuit pompe à carburant : contrôler relais, alimentation et masse.";
+  if (data->fault_codes & 0x08)
+    suggestions << "- Défaut potentiomètre de papillon : contrôler signal TPS et alimentation capteur.";
+
+  if (data->dtc1 & 0x20)
+    suggestions << "- DTC MAP actif : vérifier la durite de dépression et le capteur MAP interne.";
+  if (data->dtc1 & 0x80)
+    suggestions << "- DTC TPS actif : vérifier la cohérence position papillon au ralenti et à l'ouverture.";
+  if (data->dtc2 & 0x04)
+    suggestions << "- DTC sonde lambda actif : vérifier sonde O2, chauffage et étanchéité échappement.";
+  if (data->dtc2 & 0x08)
+    suggestions << "- DTC alimentation lambda actif : vérifier fusible, relais et alimentation sonde O2.";
+
+  if (data->engine_rpm > 600 && data->battery_voltage < 115)
+    suggestions << "- Tension batterie basse moteur tournant : suspecter alternateur/régulateur/masse.";
+  if (data->battery_voltage > 150)
+    suggestions << "- Tension batterie élevée : contrôler régulateur de charge.";
+
+  if (data->coolant_temp > 115)
+    suggestions << "- Température LDR élevée : risque de surchauffe, vérifier refroidissement.";
+  if (data->engine_rpm > 800 && data->map_kpa > 55)
+    suggestions << "- MAP élevée au régime proche ralenti : possible prise d'air ou distribution décalée.";
+  if (data->engine_rpm > 800 && data->map_kpa < 20)
+    suggestions << "- MAP anormalement basse : vérifier mesure MAP et cohérence capteur.";
+
+  if (data->lambda_sensor_status != 1)
+    suggestions << "- Statut lambda non nominal : l'asservissement richesse peut être dégradé.";
+  if (data->closed_loop != 0 && data->lambda_voltage >= 200)
+    suggestions << "- Lambda constamment haute en boucle fermée : mélange potentiellement riche.";
+  if (data->closed_loop != 0 && data->lambda_voltage <= 10)
+    suggestions << "- Lambda constamment basse en boucle fermée : mélange potentiellement pauvre.";
+
+  if (data->iac_position < 10 || data->iac_position > 50)
+    suggestions << "- Position IAC hors plage usuelle (10-50) : vérifier réglage ralenti et admission.";
+  if (data->idle_error > 100)
+    suggestions << "- Erreur de ralenti élevée : contrôler prises d'air, IAC et capteurs de charge.";
+
+  if (data->long_term_fuel_trim > 120)
+    suggestions << "- Correction long terme élevée : compensation d'un mélange trop pauvre probable.";
+  if (data->long_term_fuel_trim < 80)
+    suggestions << "- Correction long terme faible : compensation d'un mélange trop riche probable.";
+  if (data->short_term_fuel_trim > 115 || data->short_term_fuel_trim < 85)
+    suggestions << "- Correction court terme > ±15% : vérifier injection, air parasite et sonde lambda.";
+
+  if (suggestions.size() == 1)
+    suggestions << "- Aucune anomalie évidente détectée sur cet échantillon.";
+
+  suggestions << ""
+              << "Note: suggestions indicatives; confirmer avec mesures électriques/mécaniques.";
+  return suggestions.join("\n");
 }

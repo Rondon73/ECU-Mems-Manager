@@ -5,6 +5,7 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QTextEdit>
 #include "rosco.h"
 
 /**
@@ -30,10 +31,12 @@ private:
     int addRow(const QString &label);
     void setValue(int row, const QString &text);
     void setTooltip(int row, const QString &text);
+    QString buildDiagnosticSuggestions(mems_data *data) const;
 
     QTableWidget *m_table0;
     QTableWidget *m_table1;
     QTableWidget *m_table2;
+    QTextEdit *m_aiSuggestions;
     int m_rowCount;
     int m_rowsPerTable;
 
