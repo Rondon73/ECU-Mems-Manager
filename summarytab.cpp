@@ -1,5 +1,7 @@
 #include "summarytab.h"
 #include <QHeaderView>
+#include <QStringList>
+#include "shared/mems_core/mems_core.h"
 
 static const QString TOOLTIP_ICON = QString::fromUtf8("\xF0\x9F\x92\xAC ");
 
@@ -271,4 +273,17 @@ void SummaryTab::updateData(mems_data *data)
   setValue(m_rowUk1C, QString::number(data->uk1C));
   setValue(m_rowDtc0, QString::number(data->dtc0));
   setValue(m_rowDtc1, QString::number(data->dtc1));
+
+  const mems::core::Snapshot snapshot = mems::core::fromRoscoData(*data);
+  const std::vector<mems::core::DiagnosticSuggestion> suggestions =
+      mems::core::buildDiagnosticSuggestions(snapshot);
+
+  QStringList tooltipLines;
+  tooltipLines << "Diagnostics live";
+  for (int i = 0; i < static_cast<int>(suggestions.size()); ++i)
+  {
+    tooltipLines << QString("• %1").arg(QString::fromStdString(suggestions[i].title));
+  }
+
+  setToolTip(tooltipLines.join("\n"));
 }

@@ -52,6 +52,7 @@ set(SOURCES
     memsinterface.cpp
     memslogic.cpp
     database/DatabaseSeed.cpp
+    shared/mems_core/mems_core.cpp
     helpviewer.cpp
     logger.cpp
     serialdevenumerator.cpp
@@ -270,4 +271,3 @@ else()
     include(CPack)
 
 endif()
-
