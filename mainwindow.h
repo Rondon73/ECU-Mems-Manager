@@ -200,6 +200,7 @@ private:
 private slots:
     void onExitSelected();
     void onEditOptionsClicked();
+    void onHelpCopilotEducationClicked();
     void onHelpContentsClicked();
     void onHelpAboutClicked();
 

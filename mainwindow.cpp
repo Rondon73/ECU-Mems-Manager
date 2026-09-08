@@ -4,6 +4,7 @@
 #include <QList>
 #include <QDateTime>
 #include <QDir>
+#include <QDesktopServices>
 #include <QHBoxLayout>
 #include <QThread>
 #include <QFileDialog>
@@ -22,6 +23,7 @@
 #include <QPixmap>
 #include <QScreen>
 #include <QStatusBar>
+#include <QUrl>
 
 MainWindow::MainWindow(QWidget* parent):QMainWindow(parent),
 m_ui(new Ui::MainWindow),
@@ -181,6 +183,10 @@ void MainWindow::setupWidgets()
   m_ui->m_startLoggingButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
   m_ui->m_stopLoggingButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
 
+  QAction *copilotEducationAction = new QAction("GitHub Copilot Education", this);
+  copilotEducationAction->setIcon(style()->standardIcon(QStyle::SP_DialogHelpButton));
+  m_ui->m_helpMenu->insertAction(m_ui->m_helpAboutAction, copilotEducationAction);
+
   // Ajout de l'option "Toujours au premier plan" dans le menu Options
   QAction *alwaysOnTopAction = new QAction("Toujours au premier plan", this);
   alwaysOnTopAction->setCheckable(true);
@@ -205,6 +211,7 @@ void MainWindow::setupWidgets()
   // connect menu item signals
   connect(m_ui->m_exitAction, SIGNAL(triggered()), this, SLOT(onExitSelected()));
   connect(m_ui->m_editSettingsAction, SIGNAL(triggered()), this, SLOT(onEditOptionsClicked()));
+  connect(copilotEducationAction, SIGNAL(triggered()), this, SLOT(onHelpCopilotEducationClicked()));
   connect(m_ui->m_helpContentsAction, SIGNAL(triggered()), this, SLOT(onHelpContentsClicked()));
   connect(m_ui->m_helpAboutAction, SIGNAL(triggered()), this, SLOT(onHelpAboutClicked()));
 
@@ -1399,6 +1406,11 @@ void MainWindow::onStopLogging()
 void MainWindow::onHelpAboutClicked()  
 {  
   AboutBox::showAbout(this);  
+}
+
+void MainWindow::onHelpCopilotEducationClicked()
+{
+  QDesktopServices::openUrl(QUrl("https://education.github.com/"));
 }
 /**
  * Displays the online help.
