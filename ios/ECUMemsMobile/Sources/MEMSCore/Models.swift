@@ -67,7 +67,7 @@ public enum SafetyCriticalAction: String, Codable, Sendable {
     case resetECU
 }
 
-public enum ECUCommand: Sendable {
+public enum ECUCommand: Equatable, Sendable {
     case connect
     case disconnect
     case startPolling
@@ -79,7 +79,7 @@ public enum ECUCommand: Sendable {
     case resetECU
 }
 
-public enum ECUResponse: Sendable {
+public enum ECUResponse: Equatable, Sendable {
     case ok
     case liveData(LiveDataSnapshot)
     case faultCodes([FaultCode])

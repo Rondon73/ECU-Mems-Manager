@@ -41,7 +41,7 @@ public struct CSVLogCodec {
 
     public func decode(_ csv: String) throws -> [CSVLogEntry] {
         let lines = csv
-            .split(whereSeparator: \ .isNewline)
+            .split(whereSeparator: \.isNewline)
             .map(String.init)
             .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
 

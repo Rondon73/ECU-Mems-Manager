@@ -1,5 +1,4 @@
 import Foundation
-import SQLite3
 import MEMSCore
 
 public struct EcuMetadata: Equatable, Sendable {
@@ -15,6 +14,14 @@ public struct EcuMetadata: Equatable, Sendable {
         self.manufacturer = manufacturer
     }
 }
+
+#if canImport(SQLite3)
+import SQLite3
+
+private let SQLITE_TRANSIENT = unsafeBitCast(
+    -1,
+    to: sqlite3_destructor_type.self
+)
 
 public final class MetadataStore {
     private var db: OpaquePointer?
@@ -119,3 +126,39 @@ public final class MetadataStore {
         return result
     }
 }
+
+#else
+
+public final class MetadataStore {
+    private var nextId: Int64 = 1
+    private var ecus: [EcuMetadata] = []
+
+    public init() {}
+
+    public func open(path: String) throws {
+        _ = path
+    }
+
+    public func close() {}
+
+    public func createTables() throws {}
+
+    @discardableResult
+    public func addEcu(family: String, version: String, manufacturer: String?) throws -> Int64 {
+        let id = nextId
+        nextId += 1
+        ecus.append(EcuMetadata(id: id, family: family, version: version, manufacturer: manufacturer))
+        return id
+    }
+
+    public func listEcus() throws -> [EcuMetadata] {
+        ecus.sorted {
+            if $0.family == $1.family {
+                return $0.version < $1.version
+            }
+            return $0.family < $1.family
+        }
+    }
+}
+
+#endif

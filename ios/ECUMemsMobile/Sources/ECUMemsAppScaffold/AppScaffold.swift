@@ -6,20 +6,76 @@ import MEMSStore
 #if canImport(SwiftUI)
 import SwiftUI
 
+public enum DeviceRole: String {
+    case production
+    case test
+}
+
 @available(iOS 17.0, *)
 public struct ECUMemsAppScaffold: App {
-    public init() {}
+    private let role: DeviceRole
+
+    public init(role: DeviceRole = .test) {
+        self.role = role
+    }
 
     public var body: some Scene {
         WindowGroup {
-            RootView(viewModel: RootViewModel())
+            RootView(role: role)
+                .tint(WorksBMCTheme.accentRed)
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+final class RootViewModel: ObservableObject {
+    @Published var state: ConnectionState = .disconnected
+    @Published var latestSnapshot: LiveDataSnapshot?
+    @Published var faults: [FaultCode] = []
+    @Published var showFaultClearConfirmation = false
+
+    let role: DeviceRole
+    private let session = ECUSession(transport: MockECUTransport())
+
+    init(role: DeviceRole) {
+        self.role = role
+    }
+
+    func connect() {
+        Task { @MainActor in
+            try? await session.connect()
+            state = await session.state
+        }
+    }
+
+    func poll() {
+        Task { @MainActor in
+            latestSnapshot = try? await session.pollOnce()
+            state = await session.state
+        }
+    }
+
+    func refreshFaults() {
+        Task { @MainActor in
+            faults = (try? await session.readFaultCodes()) ?? []
+        }
+    }
+
+    func clearFaultsConfirmed() {
+        Task { @MainActor in
+            try? await session.clearFaultCodes(userConfirmed: true)
+            faults = (try? await session.readFaultCodes()) ?? []
         }
     }
 }
 
 @available(iOS 17.0, *)
 struct RootView: View {
-    @State var viewModel: RootViewModel
+    @StateObject private var viewModel: RootViewModel
+
+    init(role: DeviceRole) {
+        _viewModel = StateObject(wrappedValue: RootViewModel(role: role))
+    }
 
     var body: some View {
         TabView {
@@ -32,7 +88,7 @@ struct RootView: View {
             FaultsView(viewModel: viewModel)
                 .tabItem { Label("Faults", systemImage: "exclamationmark.triangle") }
 
-            ActuatorsView(viewModel: viewModel)
+            ActuatorsView(role: viewModel.role)
                 .tabItem { Label("Actuators", systemImage: "switch.2") }
 
             LogsView()
@@ -41,118 +97,89 @@ struct RootView: View {
             AnalysisView()
                 .tabItem { Label("Analysis", systemImage: "chart.xyaxis.line") }
         }
-    }
-}
-
-@available(iOS 17.0, *)
-@Observable
-final class RootViewModel {
-    var state: ConnectionState = .disconnected
-    var latestSnapshot: LiveDataSnapshot?
-    var faults: [FaultCode] = []
-    var showSafetyPrompt = false
-
-    private let session = ECUSession(transport: MockECUTransport())
-
-    func connect() {
-        Task {
-            try? await session.connect()
-            state = await session.state
-        }
-    }
-
-    func poll() {
-        Task {
-            latestSnapshot = try? await session.pollOnce()
-            state = await session.state
-        }
-    }
-
-    func refreshFaults() {
-        Task {
-            faults = (try? await session.readFaultCodes()) ?? []
-        }
-    }
-
-    func clearFaultsConfirmed() {
-        Task {
-            try? await session.clearFaultCodes(userConfirmed: true)
-            refreshFaults()
-        }
+        .background(WorksBMCTheme.background)
     }
 }
 
 @available(iOS 17.0, *)
 struct ConnectionView: View {
-    var viewModel: RootViewModel
+    @ObservedObject var viewModel: RootViewModel
 
     var body: some View {
         VStack(spacing: 12) {
+            Text("Device role: \(viewModel.role.rawValue)")
             Text("Status: \(viewModel.state.rawValue)")
             Button("Connect") { viewModel.connect() }
             Button("Poll Live Data") { viewModel.poll() }
         }
         .padding()
+        .foregroundStyle(WorksBMCTheme.primaryText)
+        .background(WorksBMCTheme.background)
     }
 }
 
 @available(iOS 17.0, *)
 struct DashboardView: View {
-    var viewModel: RootViewModel
+    @ObservedObject var viewModel: RootViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Live Dashboard")
-                .font(.headline)
+            Text("Live Dashboard").font(.headline)
             Text("RPM: \(viewModel.latestSnapshot?.engineRPM ?? 0)")
             Text("Coolant: \(viewModel.latestSnapshot?.coolantTempC ?? 0, specifier: "%.1f") °C")
             Text("Battery: \(viewModel.latestSnapshot?.batteryVoltage ?? 0, specifier: "%.1f") V")
             Text("MAP: \(viewModel.latestSnapshot?.mapKpa ?? 0, specifier: "%.1f") kPa")
         }
         .padding()
+        .foregroundStyle(WorksBMCTheme.primaryText)
+        .background(WorksBMCTheme.background)
     }
 }
 
 @available(iOS 17.0, *)
 struct FaultsView: View {
-    var viewModel: RootViewModel
+    @ObservedObject var viewModel: RootViewModel
 
     var body: some View {
         VStack {
             HStack {
                 Button("Refresh Faults") { viewModel.refreshFaults() }
-                Button("Clear Faults") { viewModel.showSafetyPrompt = true }
+                Button("Clear Faults") { viewModel.showFaultClearConfirmation = true }
             }
             List(viewModel.faults, id: \.self) { fault in
                 VStack(alignment: .leading) {
-                    Text(fault.code).bold()
-                    Text(fault.description)
+                    Text(fault.code).bold().foregroundStyle(WorksBMCTheme.accentGold)
+                    Text(fault.description).foregroundStyle(WorksBMCTheme.secondaryText)
                 }
+                .listRowBackground(WorksBMCTheme.panel)
             }
         }
-        .alert("Confirm clear fault codes?", isPresented: Binding(
-            get: { viewModel.showSafetyPrompt },
-            set: { viewModel.showSafetyPrompt = $0 }
-        )) {
+        .alert("Confirm clear fault codes?", isPresented: $viewModel.showFaultClearConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Clear", role: .destructive) { viewModel.clearFaultsConfirmed() }
         }
         .padding()
+        .foregroundStyle(WorksBMCTheme.primaryText)
+        .background(WorksBMCTheme.background)
     }
 }
 
 @available(iOS 17.0, *)
 struct ActuatorsView: View {
-    var viewModel: RootViewModel
+    let role: DeviceRole
 
     var body: some View {
         VStack(spacing: 12) {
             Text("Actuator controls scaffold")
-            Text("Add per-actuator confirmations before command execution.")
+            Text(role == .test
+                 ? "Test-device mode: commands should remain limited and explicitly confirmed."
+                 : "Production mode: keep strict confirmation and operational safeguards.")
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(WorksBMCTheme.secondaryText)
         }
         .padding()
+        .foregroundStyle(WorksBMCTheme.primaryText)
+        .background(WorksBMCTheme.background)
     }
 }
 
@@ -161,6 +188,8 @@ struct LogsView: View {
     var body: some View {
         Text("CSV logging and export scaffold")
             .padding()
+            .foregroundStyle(WorksBMCTheme.primaryText)
+            .background(WorksBMCTheme.background)
     }
 }
 
@@ -169,6 +198,8 @@ struct AnalysisView: View {
     var body: some View {
         Text("Replay analysis scaffold")
             .padding()
+            .foregroundStyle(WorksBMCTheme.primaryText)
+            .background(WorksBMCTheme.background)
     }
 }
 #endif
