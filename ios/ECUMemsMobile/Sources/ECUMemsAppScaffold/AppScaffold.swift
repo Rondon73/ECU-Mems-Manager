@@ -105,12 +105,29 @@ struct RootView: View {
 struct ConnectionView: View {
     @ObservedObject var viewModel: RootViewModel
 
+    private let numberedMenu = [
+        "1. Is the ECU connected?",
+        "2. Can we poll live data?",
+        "3. Are fault codes available?",
+        "4. Should actuator tests be enabled (test device only)?",
+        "5. Do you want to export logs for analysis?"
+    ]
+
     var body: some View {
         VStack(spacing: 12) {
             Text("Device role: \(viewModel.role.rawValue)")
             Text("Status: \(viewModel.state.rawValue)")
             Button("Connect") { viewModel.connect() }
             Button("Poll Live Data") { viewModel.poll() }
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Numbered questions menu").font(.headline)
+                ForEach(numberedMenu, id: \.self) { item in
+                    Text(item)
+                }
+            }
+            .padding()
+            .background(WorksBMCTheme.panel)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding()
         .foregroundStyle(WorksBMCTheme.primaryText)
