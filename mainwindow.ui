@@ -6946,6 +6946,12 @@ p, li { white-space: pre-wrap; }
     </item>
     <item>
      <widget class="QLabel" name="m_fineWorxBannerLabel">
+      <property name="accessibleName">
+       <string>Fine Worx Equipe</string>
+      </property>
+      <property name="accessibleDescription">
+       <string>Bannière Fine Worx Equipe</string>
+      </property>
       <property name="text">
        <string/>
       </property>
