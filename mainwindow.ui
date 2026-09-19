@@ -6953,7 +6953,7 @@ p, li { white-space: pre-wrap; }
        </size>
       </property>
       <property name="text">
-       <string comment="Header brand banner">Fine Worx Equipe</string>
+       <string notr="true">Fine Worx Equipe</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
