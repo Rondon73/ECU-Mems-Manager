@@ -180,6 +180,7 @@ void MainWindow::setupWidgets()
   m_ui->m_helpAboutAction->setIcon(style()->standardIcon(QStyle::SP_MessageBoxInformation));
   m_ui->m_startLoggingButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
   m_ui->m_stopLoggingButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
+  m_ui->m_fineWorxBannerLabel->setText(tr("Fine Worx Equipe"));
 
   // Ajout de l'option "Toujours au premier plan" dans le menu Options
   QAction *alwaysOnTopAction = new QAction("Toujours au premier plan", this);

@@ -6854,7 +6854,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>3</x>
       <y>0</y>
-      <width>1282</width>
+      <width>781</width>
       <height>29</height>
      </rect>
     </property>
@@ -6946,14 +6946,8 @@ p, li { white-space: pre-wrap; }
     </item>
     <item>
      <widget class="QLabel" name="m_fineWorxBannerLabel">
-      <property name="minimumSize">
-       <size>
-        <width>280</width>
-        <height>0</height>
-       </size>
-      </property>
       <property name="text">
-       <string notr="true">Fine Worx Equipe</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
