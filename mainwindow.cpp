@@ -20,6 +20,7 @@
 #include <QDir>
 #include <QDateTime>
 #include <QPixmap>
+#include <QPainter>
 #include <QScreen>
 #include <QStatusBar>
 
@@ -180,9 +181,20 @@ void MainWindow::setupWidgets()
   m_ui->m_helpAboutAction->setIcon(style()->standardIcon(QStyle::SP_MessageBoxInformation));
   m_ui->m_startLoggingButton->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
   m_ui->m_stopLoggingButton->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
-  m_ui->m_fineWorxBannerLabel->setText(tr("Fine Worx Equipe"));
-  m_ui->m_fineWorxBannerLabel->setAccessibleName(tr("Fine Worx Equipe"));
-  m_ui->m_fineWorxBannerLabel->setAccessibleDescription(tr("Fine Worx Equipe banner"));
+  QFont bannerFont = m_ui->m_fineWorxBannerLabel->font();
+  bannerFont.setBold(true);
+  bannerFont.setPointSize(10);
+  const QString bannerText = tr("Fine Worx Equipe");
+  const QFontMetrics bannerMetrics(bannerFont);
+  QPixmap bannerPixmap(bannerMetrics.horizontalAdvance(bannerText) + 8, bannerMetrics.height());
+  bannerPixmap.fill(Qt::transparent);
+  QPainter bannerPainter(&bannerPixmap);
+  bannerPainter.setFont(bannerFont);
+  bannerPainter.setPen(Qt::white);
+  bannerPainter.drawText(bannerPixmap.rect(), Qt::AlignCenter, bannerText);
+  bannerPainter.end();
+  m_ui->m_fineWorxBannerLabel->setPixmap(bannerPixmap);
+  m_ui->m_fineWorxBannerLabel->setFocusPolicy(Qt::NoFocus);
 
   // Ajout de l'option "Toujours au premier plan" dans le menu Options
   QAction *alwaysOnTopAction = new QAction("Toujours au premier plan", this);
