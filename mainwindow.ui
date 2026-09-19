@@ -6944,6 +6944,22 @@ p, li { white-space: pre-wrap; }
     </property>
     <layout class="QHBoxLayout" name="m_lowerHorizontalLayout"/>
    </widget>
+   <widget class="QLabel" name="m_fineWorxBannerLabel">
+    <property name="geometry">
+     <rect>
+      <x>795</x>
+      <y>0</y>
+      <width>490</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Fine Worx Equipe</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
 <!--    <widget class="QPushButton" name="exitButton">
     <property name="geometry">
      <rect>

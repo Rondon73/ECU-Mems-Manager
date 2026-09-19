@@ -31,6 +31,16 @@ QGroupBox::title {
 QLabel {
     background-color: transparent;
 }
+QLabel#m_fineWorxBannerLabel {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #0f172a, stop:0.5 #1d4ed8, stop:1 #38bdf8);
+    color: #ffffff;
+    border: 1px solid #1e3a8a;
+    border-radius: 10px;
+    font-size: 10pt;
+    font-weight: 700;
+    padding: 4px 18px;
+}
 QPushButton {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
         stop:0 #7bb8ff, stop:0.49 #2f7dff, stop:0.5 #1f66e6, stop:1 #1653c2);
@@ -192,6 +202,16 @@ QGroupBox::title {
 }
 QLabel {
     background-color: transparent;
+}
+QLabel#m_fineWorxBannerLabel {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #0f172a, stop:0.5 #1d4ed8, stop:1 #2563eb);
+    color: #f8fafc;
+    border: 1px solid #60a5fa;
+    border-radius: 10px;
+    font-size: 10pt;
+    font-weight: 700;
+    padding: 4px 18px;
 }
 QPushButton {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
