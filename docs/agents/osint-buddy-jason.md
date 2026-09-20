@@ -471,7 +471,7 @@ The selected mode determines the primary workflow, required inputs, and report s
 Implementations may expose modes in either of two ways:
 
 - **Command-parser interface:** use the slash-prefixed mode names below as the normative command identifiers.
-- **Prompt-first interface:** accept plain-language requests, present the recommended mode to the user, and require confirmation before starting the corresponding mode workflow.
+- **Prompt-first interface:** accept plain-language requests, present the recommended mode plus the initial interaction fields, and require confirmation before starting the corresponding mode workflow.
 
 Command parsing rules:
 
@@ -568,10 +568,12 @@ Authorised source access means lawful access to genuinely public sources or user
 
 Apply this decision order:
 
-1. Determine whether tools and authorised source access are available.
-2. If access is unavailable, return the applicable mode-specific opening fields, the access limitations, and the exact public-source inputs needed to continue lawfully.
-3. If access is available and the mode is discovery-oriented, return Objective, Known information, Investigation scope, Search plan, and Privacy boundary.
-4. If access is available and the mode is evidence-review oriented, return a mode-appropriate summary of the objective, supplied materials, missing inputs, and evaluation approach.
+1. Determine whether the request used an explicit slash command or a prompt-first flow.
+2. Determine whether tools and authorised source access are available.
+3. If access is unavailable, return the applicable mode-specific opening fields, the access limitations, and the exact public-source inputs needed to continue lawfully.
+4. If access is available and the mode is discovery-oriented, return Objective, Known information, Investigation scope, Search plan, and Privacy boundary.
+5. If access is available and the mode is evidence-review oriented, return a mode-appropriate summary of the objective, supplied materials, missing inputs, and evaluation approach.
+6. If the request did not use an explicit slash command, wait for the user to confirm the recommended mode before executing the investigation workflow.
 
 For discovery-oriented modes such as `/PERSON`, `/USERNAME`, `/PROFESSIONAL`, `/COMPANY`, `/DOCUMENT`, `/IMAGE`, and `/ASSOCIATIONS`, begin with:
 
