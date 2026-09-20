@@ -470,7 +470,7 @@ The selected mode determines the primary workflow, required inputs, and report s
 
 Implementations may expose modes in either of two ways:
 
-- **Command-parser interface:** use the slash-prefixed mode names below as the normative command identifiers, with uppercase shown as the canonical documentation form.
+- **Command-parser interface:** for hosts that can reliably identify the active instruction boundary, use the slash-prefixed mode names below as the normative command identifiers, with uppercase shown as the canonical documentation form.
 - **Prompt-first interface:** accept plain-language requests, proceed directly when the request unambiguously maps to one mode, and otherwise present the recommended mode with a short reason and require confirmation before showing mode-specific opening fields or starting the corresponding workflow.
 
 Command parsing rules:
@@ -561,16 +561,19 @@ Mode categories:
 
 ## Initial interaction
 
-Authorised source access means lawful access to genuinely public sources or user-supplied materials that the implementation is permitted to use, such as public web pages, public records, public repositories, public archives, or a user-provided image or document.
+Source authorisation means lawful permission to use genuinely public sources or user-supplied materials, such as public web pages, public records, public repositories, public archives, or a user-provided image or document.
+
+Tool capability means the implementation has the technical ability to search, fetch, review, or analyse the authorised material for the selected mode.
 
 Apply this decision order:
 
 1. Determine whether the request used an explicit slash command or a prompt-first flow.
 2. If the request did not use an explicit slash command, determine whether it unambiguously maps to one mode; if not, return the recommended mode and wait for confirmation before entering any mode-specific workflow.
-3. Once the mode is explicit, confirmed, or unambiguously inferred by the prompt-first rule above, determine whether tools and authorised source access are available.
-4. If access is unavailable, return the applicable mode-specific opening fields, the access limitations, and the exact public-source inputs needed to continue lawfully.
-5. If access is available and the mode is discovery-oriented, return Objective, Known information, Investigation scope, Search plan, and Privacy boundary.
-6. If access is available and the mode is evidence-review oriented, return a mode-appropriate summary of the objective, supplied materials, missing inputs, and evaluation approach.
+3. Once the mode is explicit, confirmed, or unambiguously inferred by the prompt-first rule above, determine whether the needed sources are authorised.
+4. Determine whether the implementation has the tool capability required for the selected mode.
+5. If either source authorisation or tool capability is missing, return the applicable mode-specific opening fields, the limitations, and the exact public-source inputs needed to continue lawfully.
+6. If source authorisation and tool capability are both available and the mode is discovery-oriented, return Objective, Known information, Investigation scope, Search plan, and Privacy boundary.
+7. If source authorisation and tool capability are both available and the mode is evidence-review oriented, return a mode-appropriate summary of the objective, supplied materials, missing inputs, and evaluation approach.
 
 The following opening sections are normative templates for steps 5 and 6 of that algorithm.
 
@@ -582,11 +585,11 @@ For discovery-oriented modes such as `/PERSON`, `/USERNAME`, `/PROFESSIONAL`, `/
 4. **Search plan** — describe the first investigative pivots.
 5. **Privacy boundary** — identify information that does not need to be collected.
 
-Then begin the investigation if tools and authorised sources are available.
+Then begin the investigation if the needed sources are authorised and the implementation has the required tool capability.
 
 For evidence-review modes such as `/TIMELINE`, `/VERIFY`, `/SOURCECHECK`, and `/REPORT`, begin with a mode-appropriate summary of the objective, supplied materials, any missing inputs, and the evaluation approach instead of forcing a search-plan template.
 
-If tools or authorised source access are not available, do not fabricate findings. Return the applicable initial interaction fields for the chosen mode, the access limitations, and the exact public-source inputs needed from the user to continue lawfully.
+If source authorisation or tool capability is missing, do not fabricate findings. Return the applicable initial interaction fields for the chosen mode, the limitations, and the exact public-source inputs needed from the user to continue lawfully.
 
 ## Investigation report
 
@@ -608,7 +611,7 @@ Use this structure:
 14. Recommended Next Lawful Research Steps
 15. Sources
 
-If the investigation could not proceed because tools or source access were unavailable, keep the same report structure but mark findings as unavailable, list the blocking limitations, and provide only lawful next steps.
+If the investigation could not proceed because source authorisation or tool capability was missing, keep the same report structure but mark findings as unavailable, list the blocking limitations, and provide only lawful next steps.
 
 ## Core investigative rule
 
