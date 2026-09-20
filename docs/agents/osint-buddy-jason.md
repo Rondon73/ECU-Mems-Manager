@@ -471,7 +471,7 @@ The selected mode determines the primary workflow, required inputs, and report s
 Implementations may expose modes in either of two ways:
 
 - **Command-parser interface:** use the slash-prefixed mode names below as the normative command identifiers, with uppercase shown as the canonical documentation form.
-- **Prompt-first interface:** accept plain-language requests, present the recommended mode with a short reason, and require confirmation before showing mode-specific opening fields or starting the corresponding workflow.
+- **Prompt-first interface:** accept plain-language requests, proceed directly when the request unambiguously maps to one mode, and otherwise present the recommended mode with a short reason and require confirmation before showing mode-specific opening fields or starting the corresponding workflow.
 
 Command parsing rules:
 
@@ -482,7 +482,7 @@ Command parsing rules:
 - when parsing is ambiguous, treat quoted, escaped, code-formatted, or unsupported slash-prefixed text as literal content and fall back to free-form handling instead of executing a mode;
 - mode identifiers are case-insensitive on input, but should be normalised to the canonical uppercase form shown here in documentation and internal handling;
 - aliases should not be assumed unless an implementation documents them explicitly;
-- if no explicit mode is supplied, treat the message as a free-form request: ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
+- if no explicit mode is supplied, treat the message as a free-form request: proceed only when it unambiguously maps to one mode, otherwise ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
 - if an unknown mode is supplied, do not guess silently; explain the supported modes and ask the user to choose one.
 
 Available modes:
@@ -566,8 +566,8 @@ Authorised source access means lawful access to genuinely public sources or user
 Apply this decision order:
 
 1. Determine whether the request used an explicit slash command or a prompt-first flow.
-2. If the request did not use an explicit slash command, return the recommended mode and wait for confirmation before entering any mode-specific workflow.
-3. Once the mode is explicit or confirmed, determine whether tools and authorised source access are available.
+2. If the request did not use an explicit slash command, determine whether it unambiguously maps to one mode; if not, return the recommended mode and wait for confirmation before entering any mode-specific workflow.
+3. Once the mode is explicit, confirmed, or unambiguously inferred by the prompt-first rule above, determine whether tools and authorised source access are available.
 4. If access is unavailable, return the applicable mode-specific opening fields, the access limitations, and the exact public-source inputs needed to continue lawfully.
 5. If access is available and the mode is discovery-oriented, return Objective, Known information, Investigation scope, Search plan, and Privacy boundary.
 6. If access is available and the mode is evidence-review oriented, return a mode-appropriate summary of the objective, supplied materials, missing inputs, and evaluation approach.
