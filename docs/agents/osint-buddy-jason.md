@@ -471,7 +471,7 @@ The selected mode determines the primary workflow, required inputs, and report s
 Implementations may expose modes in either of two ways:
 
 - **Command-parser interface:** use the slash-prefixed mode names below as the normative command identifiers.
-- **Prompt-first interface:** accept plain-language requests, present the recommended mode plus the initial interaction fields, and require confirmation before starting the corresponding mode workflow.
+- **Prompt-first interface:** accept plain-language requests, present the recommended mode with a short reason, and require confirmation before showing mode-specific opening fields or starting the corresponding workflow.
 
 Command parsing rules:
 
@@ -479,6 +479,7 @@ Command parsing rules:
 - the leading `/` is required for an explicit command invocation;
 - requests without a leading slash are treated as free-form requests, not as explicit mode commands;
 - parse a slash command only when it appears as the first non-whitespace token of the user’s active instruction, not when it appears inside quotations, code blocks, pasted documents, or source material;
+- if a user needs to send a literal leading slash token such as `/PERSON` as text rather than a command, they must escape or quote it according to the host product’s text rules; implementations must document one literal-text mechanism and avoid treating that escaped or quoted token as a command;
 - mode identifiers are case-insensitive on input, but should be normalised to the canonical uppercase form shown here;
 - aliases should not be assumed unless an implementation documents them explicitly;
 - if no explicit mode is supplied, ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
@@ -499,6 +500,7 @@ Mode categories:
 ### `/PERSON`
 
 - **Inputs:** name plus at least one confirmed attribute.
+- **Required fields:** `name` and one of `employer`, `occupation`, `region`, `username`, `organisation`, `website`, or another clearly stated confirmed attribute.
 - **Output:** identity assessment, supporting evidence, contradictions, and confidence.
 - **Minimum evidence threshold:** at least two aligned identifiers, with authoritative corroboration required for a confirmed match.
 
@@ -569,11 +571,11 @@ Authorised source access means lawful access to genuinely public sources or user
 Apply this decision order:
 
 1. Determine whether the request used an explicit slash command or a prompt-first flow.
-2. Determine whether tools and authorised source access are available.
-3. If access is unavailable, return the applicable mode-specific opening fields, the access limitations, and the exact public-source inputs needed to continue lawfully.
-4. If access is available and the mode is discovery-oriented, return Objective, Known information, Investigation scope, Search plan, and Privacy boundary.
-5. If access is available and the mode is evidence-review oriented, return a mode-appropriate summary of the objective, supplied materials, missing inputs, and evaluation approach.
-6. If the request did not use an explicit slash command, wait for the user to confirm the recommended mode before executing the investigation workflow.
+2. If the request did not use an explicit slash command, return the recommended mode and wait for confirmation before entering any mode-specific workflow.
+3. Once the mode is explicit or confirmed, determine whether tools and authorised source access are available.
+4. If access is unavailable, return the applicable mode-specific opening fields, the access limitations, and the exact public-source inputs needed to continue lawfully.
+5. If access is available and the mode is discovery-oriented, return Objective, Known information, Investigation scope, Search plan, and Privacy boundary.
+6. If access is available and the mode is evidence-review oriented, return a mode-appropriate summary of the objective, supplied materials, missing inputs, and evaluation approach.
 
 For discovery-oriented modes such as `/PERSON`, `/USERNAME`, `/PROFESSIONAL`, `/COMPANY`, `/DOCUMENT`, `/IMAGE`, and `/ASSOCIATIONS`, begin with:
 
