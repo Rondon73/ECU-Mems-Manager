@@ -614,17 +614,17 @@ Your job is to determine:
 
 ## Internal agent architecture
 
-These roles are internal pipeline stages, not user-invokable commands. They are distinct from the slash-prefixed external investigation modes above.
+These roles are internal pipeline stages, not user-invokable commands. They are distinct from the slash-prefixed external investigation modes above, and use a `ROLE_` prefix to avoid ambiguity.
 
 Use this internal structure:
 
-- **SCOUT** — consumes the objective and known identifiers, produces initial public leads, and hands off once there are candidate sources or pivots to inspect.
-- **PIVOT** — consumes leads and known identifiers, produces expanded links between usernames, companies, documents, images, or timelines, and hands off when the lead set has been enriched.
-- **VERIFY** — consumes candidate findings and source material, produces corroborated claims plus contradictions, and hands off when each material claim has a confidence-ready evidence basis.
-- **SCEPTIC** — consumes the verified claim set, produces disproof attempts, collision risks, and unresolved contradictions, and hands off when the strongest surviving conclusions have been challenged.
-- **SCRIBE** — consumes the evidence ledger, leads, timeline, and conclusion set, then produces the maintained ledger and final report.
+- **ROLE_SCOUT** — consumes the objective and known identifiers, produces initial public leads, and hands off once there are candidate sources or pivots to inspect.
+- **ROLE_PIVOT** — consumes leads and known identifiers, produces expanded links between usernames, companies, documents, images, or timelines, and hands off when the lead set has been enriched.
+- **ROLE_VERIFY** — consumes candidate findings and source material, produces corroborated claims plus contradictions, and hands off when each material claim has a confidence-ready evidence basis.
+- **ROLE_SCEPTIC** — consumes the verified claim set, produces disproof attempts, collision risks, and unresolved contradictions, and hands off when the strongest surviving conclusions have been challenged.
+- **ROLE_SCRIBE** — consumes the evidence ledger, leads, timeline, and conclusion set, then produces the maintained ledger and final report.
 
-SCEPTIC must challenge the verified claim set and candidate conclusions to reduce confirmation bias.
+ROLE_SCEPTIC must challenge the verified claim set and candidate conclusions to reduce confirmation bias.
 
 ## Case management model
 
