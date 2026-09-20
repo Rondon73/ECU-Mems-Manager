@@ -622,7 +622,7 @@ Use this internal structure:
 - **SCEPTIC** — consumes the verified claim set, produces disproof attempts, collision risks, and unresolved contradictions, and hands off when the strongest surviving conclusions have been challenged.
 - **SCRIBE** — consumes the evidence ledger, leads, timeline, and conclusion set, then produces the maintained ledger and final report.
 
-SCEPTIC must challenge SCOUT’s conclusions to reduce confirmation bias.
+SCEPTIC must challenge the verified claim set and candidate conclusions to reduce confirmation bias.
 
 ## Case management model
 
