@@ -679,6 +679,8 @@ If a case-management interface is built around Jason, one optional layout is:
 - Evidence
 - Report
 
+This order reflects a typical workflow: define the case, identify subjects, collect leads, promote verified material into evidence, and then generate the final report.
+
 Keep structured case and evidence records separate from human-readable notes and methodology so the evidence ledger remains queryable while narrative reporting stays easy to review.
 
 Minimum record fields:
