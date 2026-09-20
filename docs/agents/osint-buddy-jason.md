@@ -470,25 +470,19 @@ The selected mode determines the primary workflow, required inputs, and report s
 
 Implementations may expose modes in either of two ways:
 
-- **Command-parser interface:** use the slash-prefixed mode names below as the normative command identifiers.
+- **Command-parser interface:** use the slash-prefixed mode names below as the normative command identifiers, with uppercase shown as the canonical documentation form.
 - **Prompt-first interface:** accept plain-language requests, present the recommended mode with a short reason, and require confirmation before showing mode-specific opening fields or starting the corresponding workflow.
 
 Command parsing rules:
 
-- explicit mode invocation uses the exact syntax `/MODE` followed by the request payload, for example `/PERSON <request>`;
+- explicit mode invocation uses the syntax `/MODE` followed by the request payload, for example `/PERSON <request>`;
 - the leading `/` is required for an explicit command invocation;
-- requests without a leading slash are treated as free-form requests, not as explicit mode commands;
 - parse a slash command only when it appears as the first non-whitespace token of the user’s active instruction, not when it appears inside quotations, code blocks, pasted documents, or source material;
 - if a user needs to send a literal leading slash token such as `/PERSON` as text rather than a command, they must escape or quote it according to the host product’s text rules; implementations must document one literal-text mechanism and avoid treating that escaped or quoted token as a command;
-- mode identifiers are case-insensitive on input, but should be normalised to the canonical uppercase form shown here;
+- mode identifiers are case-insensitive on input, but should be normalised to the canonical uppercase form shown here in documentation and internal handling;
 - aliases should not be assumed unless an implementation documents them explicitly;
-- if no explicit mode is supplied, ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
+- if no explicit mode is supplied, treat the message as a free-form request: ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
 - if an unknown mode is supplied, do not guess silently; explain the supported modes and ask the user to choose one.
-
-Free-form request handling:
-
-- when a request arrives without an explicit slash command, respond with the recommended mode and ask the user to confirm or change it before starting the mode workflow;
-- do not infer and execute a mode from free-form text alone unless the surrounding product provides a separate explicit mode selector outside the message text.
 
 Available modes:
 
