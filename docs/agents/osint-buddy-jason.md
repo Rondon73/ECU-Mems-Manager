@@ -561,6 +561,10 @@ SCEPTIC must challenge SCOUT’s conclusions to reduce confirmation bias.
 
 If a case-management interface is built around Jason, prefer five panels:
 
-**Case → Subjects → Leads → Evidence → Report**
+- Case
+- Subjects
+- Leads
+- Evidence
+- Report
 
 Keep structured case and evidence records separate from human-readable notes and methodology so the evidence ledger remains queryable while narrative reporting stays easy to review.
