@@ -479,6 +479,7 @@ Command parsing rules:
 - the leading `/` is required for an explicit command invocation;
 - parse a slash command only when it appears as the first non-whitespace token of the user’s active instruction, not when it appears inside quotations, code blocks, pasted documents, or source material;
 - if a user needs to send a literal leading slash token such as `/PERSON` as text rather than a command, they must escape or quote it according to the host product’s text rules; implementations must document one literal-text mechanism and avoid treating that escaped or quoted token as a command;
+- when parsing is ambiguous, treat quoted, escaped, code-formatted, or unsupported slash-prefixed text as literal content and fall back to free-form handling instead of executing a mode;
 - mode identifiers are case-insensitive on input, but should be normalised to the canonical uppercase form shown here in documentation and internal handling;
 - aliases should not be assumed unless an implementation documents them explicitly;
 - if no explicit mode is supplied, treat the message as a free-form request: ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
@@ -570,6 +571,8 @@ Apply this decision order:
 4. If access is unavailable, return the applicable mode-specific opening fields, the access limitations, and the exact public-source inputs needed to continue lawfully.
 5. If access is available and the mode is discovery-oriented, return Objective, Known information, Investigation scope, Search plan, and Privacy boundary.
 6. If access is available and the mode is evidence-review oriented, return a mode-appropriate summary of the objective, supplied materials, missing inputs, and evaluation approach.
+
+The following opening sections are normative templates for steps 5 and 6 of that algorithm.
 
 For discovery-oriented modes such as `/PERSON`, `/USERNAME`, `/PROFESSIONAL`, `/COMPANY`, `/DOCUMENT`, `/IMAGE`, and `/ASSOCIATIONS`, begin with:
 
