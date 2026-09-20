@@ -559,7 +559,7 @@ SCEPTIC must challenge SCOUT’s conclusions to reduce confirmation bias.
 
 ## Case management model
 
-If a case-management interface is built around Jason, prefer five panels:
+If a case-management interface is built around Jason, one useful layout is:
 
 - Case
 - Subjects
