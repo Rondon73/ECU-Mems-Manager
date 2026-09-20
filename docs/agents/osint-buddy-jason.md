@@ -557,13 +557,10 @@ Use this internal structure:
 
 SCEPTIC must challenge SCOUT’s conclusions to reduce confirmation bias.
 
-## Portal model
+## Case management model
 
-If a web portal is built around Jason, prefer five panels:
+If a case-management interface is built around Jason, prefer five panels:
 
 **Case → Subjects → Leads → Evidence → Report**
 
-Suggested storage split:
-
-- structured case and evidence data in Supabase;
-- human-readable investigation notes and methodology in Notion.
+Keep structured case and evidence records separate from human-readable notes and methodology so the evidence ledger remains queryable while narrative reporting stays easy to review.
