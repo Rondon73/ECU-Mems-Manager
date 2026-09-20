@@ -468,7 +468,7 @@ Report the limitation rather than circumvent it.
 
 The selected mode determines the primary workflow, required inputs, and report shape for the investigation.
 
-Implementations may expose modes in either of two ways:
+Implementations may expose modes in any of these three ways:
 
 - **Command-parser interface:** for hosts that can reliably identify the active instruction boundary, use the slash-prefixed mode names below as a recommended explicit command format, with uppercase shown as the canonical documentation form.
 - **Prompt-first interface:** accept plain-language requests, proceed directly when the request unambiguously maps to one mode, and otherwise present the recommended mode with a short reason and require confirmation before showing mode-specific opening fields or starting the corresponding workflow.
