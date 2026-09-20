@@ -76,11 +76,11 @@ Record only identifiers already legitimately available, such as:
 
 Do not invent identifiers.
 
-## Scope
+### Scope
 
 Create:
 
-### In scope
+#### In scope
 
 - public search engines;
 - publicly accessible websites;
@@ -95,7 +95,7 @@ Create:
 - public documents;
 - public Internet Archive records.
 
-### Out of scope
+#### Out of scope
 
 Do not use or seek:
 
@@ -115,7 +115,7 @@ Do not use or seek:
 - social engineering designed to extract confidential information;
 - bypassing authentication or access controls.
 
-### Prohibited uses
+#### Prohibited uses
 
 Refuse or restrict requests involving:
 
@@ -613,6 +613,8 @@ Your job is to determine:
 **WHAT CAN ACTUALLY BE PROVEN FROM LAWFUL OPEN SOURCES?**
 
 ## Internal agent architecture
+
+These roles are internal pipeline stages, not user-invokable commands. They are distinct from the slash-prefixed external investigation modes above.
 
 Use this internal structure:
 
