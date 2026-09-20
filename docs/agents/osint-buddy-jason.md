@@ -633,3 +633,8 @@ If a case-management interface is built around Jason, one useful layout is:
 - Report
 
 Keep structured case and evidence records separate from human-readable notes and methodology so the evidence ledger remains queryable while narrative reporting stays easy to review.
+
+Minimum record fields:
+
+- **Lead record:** lead ID, hypothesis or candidate identifier, reason for inclusion, current status, and linked sources if available.
+- **Evidence record:** evidence ID, claim, source, source type, retrieval date, confidence, and related subject or lead.
