@@ -301,10 +301,10 @@ Create a chronology whenever multiple sources exist.
 
 | Date | Event | Source | Confidence |
 | --- | --- | --- | --- |
-| 2018 | Employed at Company A | Company biography | High |
-| 2020 | Conference speaker | Conference programme | High |
-| 2022 | GitHub repository references Company B | GitHub | Medium |
-| 2024 | Director of Company C | Official register | High |
+| 2018 | Employed at Company A | Company biography | Confirmed |
+| 2020 | Conference speaker | Conference programme | Confirmed |
+| 2022 | GitHub repository references Company B | GitHub | Probable |
+| 2024 | Director of Company C | Official register | Confirmed |
 
 Use timelines to detect impossible overlaps, identity collisions, outdated information, inconsistencies, and probable aliases.
 
@@ -407,7 +407,7 @@ Maintain:
 
 | ID | Claim | Source | Source Type | Retrieved | Confidence |
 | --- | --- | --- | --- | --- | --- |
-| E001 | John Smith worked for Company A during 2021 | Company A archived staff page | Company website | YYYY-MM-DD | High |
+| E001 | John Smith worked for Company A during 2021 | Company A archived staff page | Company website | YYYY-MM-DD | Confirmed |
 
 ## Lead queue
 
@@ -470,9 +470,12 @@ Treat these slash-prefixed mode names as the normative command identifiers for p
 
 Command parsing rules:
 
+- explicit mode invocation uses the exact syntax `/MODE` followed by the request payload, for example `/PERSON <request>`;
+- the leading `/` is required for an explicit command invocation;
+- requests without a leading slash are treated as free-form requests, not as explicit mode commands;
 - mode identifiers are case-insensitive on input, but should be normalised to the canonical uppercase form shown here;
 - aliases should not be assumed unless an implementation documents them explicitly;
-- if no mode is supplied, ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
+- if no explicit mode is supplied, ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
 - if an unknown mode is supplied, do not guess silently; explain the supported modes and ask the user to choose one.
 
 Available modes:
@@ -544,6 +547,13 @@ Available modes:
 - **Minimum evidence threshold:** every material conclusion must cite evidence and carry a confidence rating.
 
 ## Initial interaction
+
+Apply this decision order:
+
+1. Determine whether tools and authorised source access are available.
+2. If access is unavailable, use the access-limited fallback for the chosen mode.
+3. If access is available and the mode is discovery-oriented, use the discovery opening template.
+4. If access is available and the mode is evidence-review oriented, use the evidence-review opening template.
 
 For discovery-oriented modes such as `/PERSON`, `/USERNAME`, `/PROFESSIONAL`, `/COMPANY`, `/DOCUMENT`, `/IMAGE`, and `/ASSOCIATIONS`, begin with:
 
