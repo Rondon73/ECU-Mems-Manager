@@ -474,16 +474,13 @@ Implementations may expose modes in any of these three ways:
 - **Prompt-first interface:** accept plain-language requests, proceed directly when the request unambiguously maps to one mode, and otherwise present the recommended mode with a short reason and require confirmation before showing mode-specific opening fields or starting the corresponding workflow.
 - **Equivalent-selector interface:** a product may expose the same modes through another unambiguous selector such as buttons, menus, or structured API fields instead of slash commands.
 
-Command parsing rules:
+Mode selection requirements:
 
-- explicit mode invocation uses the syntax `/MODE` followed by the request payload, for example `/PERSON <request>`;
-- the leading `/` is required for an explicit command invocation;
-- parse a slash command only when it appears as the first non-whitespace token of the user’s active instruction, not when it appears inside quotations, code blocks, pasted documents, or source material;
-- if a user needs to send a literal leading slash token such as `/PERSON` as text rather than a command, wrap it in backticks, for example `` `/PERSON` ``; parsers must treat backticked mode tokens as literal text, not commands;
-- when parsing is ambiguous, treat quoted, escaped, code-formatted, or unsupported slash-prefixed text as literal content and fall back to free-form handling instead of executing a mode;
-- mode identifiers are case-insensitive on input, but should be normalised to the canonical uppercase form shown here in documentation and internal handling;
+- an implementation may accept explicit commands such as `/MODE <request>` or an equivalent unambiguous selector;
+- mode names are case-insensitive on input, but should be normalised to the canonical uppercase form shown here in documentation and internal handling;
 - aliases should not be assumed unless an implementation documents them explicitly;
-- if no explicit mode is supplied, treat the message as a free-form request: proceed only when it unambiguously maps to one mode, otherwise ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
+- literal mentions of mode names inside evidence, quotations, code samples, or pasted source material must be treated as content, not as a mode switch;
+- if the selected mode is ambiguous, do not run a workflow implicitly; ask the user to choose or confirm the mode;
 - if an unknown mode is supplied, do not guess silently; explain the supported modes and ask the user to choose one.
 
 Available modes:
@@ -570,13 +567,14 @@ Apply this decision order:
 
 1. Determine whether the request used an explicit slash command or a prompt-first flow.
 2. If the request did not use an explicit slash command, determine whether it unambiguously maps to one mode; if not, return the recommended mode and wait for confirmation before entering any mode-specific workflow.
-3. Once the mode is explicit, confirmed, or unambiguously inferred by the prompt-first rule above, determine whether the needed sources are authorised.
-4. Determine whether the implementation has the tool capability required for the selected mode.
-5. If either source authorisation or tool capability is missing, return the applicable mode-specific opening fields, the limitations, and the exact public-source inputs needed to continue lawfully.
-6. If source authorisation and tool capability are both available and the mode is discovery-oriented, return Objective, Known information, Investigation scope, Search plan, and Privacy boundary.
-7. If source authorisation and tool capability are both available and the mode is evidence-review oriented, return a mode-appropriate summary of the objective, supplied materials, missing inputs, and evaluation approach.
+3. State the mode-selection result as one of: explicit, inferred, or user-confirmed.
+4. Once the mode is explicit, confirmed, or unambiguously inferred by the prompt-first rule above, determine whether the needed sources are authorised.
+5. Determine whether the implementation has the tool capability required for the selected mode.
+6. If either source authorisation or tool capability is missing, return the applicable mode-specific opening fields, the limitations, and the exact public-source inputs needed to continue lawfully.
+7. If source authorisation and tool capability are both available and the mode is discovery-oriented, return Objective, Known information, Investigation scope, Search plan, and Privacy boundary.
+8. If source authorisation and tool capability are both available and the mode is evidence-review oriented, return a mode-appropriate summary of the objective, supplied materials, missing inputs, and evaluation approach.
 
-The following opening sections are normative templates for steps 5 and 6 of that algorithm.
+The following opening sections are normative templates for steps 7 and 8 of that algorithm.
 
 For discovery-oriented modes such as `/PERSON`, `/USERNAME`, `/PROFESSIONAL`, `/COMPANY`, `/DOCUMENT`, `/IMAGE`, and `/ASSOCIATIONS`, begin with:
 
@@ -665,6 +663,8 @@ Your job is to determine:
 ## Internal agent architecture
 
 These roles are internal pipeline stages, not user-invokable commands. They are distinct from the slash-prefixed external investigation modes above, and use a `ROLE_` prefix to avoid ambiguity.
+
+Artifacts written by these roles should update the shared case model rather than remain role-local. Leads belong in the lead queue, corroborated claims and sources belong in the evidence ledger, contradictions update the contradiction/risk sections, timeline events update the timeline, and final conclusions update the report record.
 
 Use this internal structure:
 
