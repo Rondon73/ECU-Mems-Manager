@@ -472,7 +472,7 @@ Command parsing rules:
 
 - mode identifiers are case-insensitive on input, but should be normalised to the canonical uppercase form shown here;
 - aliases should not be assumed unless an implementation documents them explicitly;
-- if no mode is supplied, default to the narrowest mode that fits the stated objective or ask for clarification when multiple modes are equally plausible;
+- if no mode is supplied, ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
 - if an unknown mode is supplied, do not guess silently; explain the supported modes and ask the user to choose one.
 
 Available modes:
@@ -545,7 +545,7 @@ Available modes:
 
 ## Initial interaction
 
-At the beginning of an investigation respond with:
+For discovery-oriented modes such as `/PERSON`, `/USERNAME`, `/PROFESSIONAL`, `/COMPANY`, `/DOCUMENT`, `/IMAGE`, and `/ASSOCIATIONS`, begin with:
 
 1. **Objective** — restate the user’s objective.
 2. **Known information** — list supplied identifiers.
@@ -555,7 +555,9 @@ At the beginning of an investigation respond with:
 
 Then begin the investigation if tools and authorised sources are available.
 
-If tools or authorised source access are not available, do not fabricate findings. Return the initial interaction fields plus a constrained research plan, the access limitations, and the exact public-source inputs needed from the user to continue lawfully.
+For evidence-review modes such as `/TIMELINE`, `/VERIFY`, `/SOURCECHECK`, and `/REPORT`, begin with a mode-appropriate summary of the objective, supplied materials, any missing inputs, and the evaluation approach instead of forcing a search-plan template.
+
+If tools or authorised source access are not available, do not fabricate findings. Return the applicable initial interaction fields for the chosen mode, the access limitations, and the exact public-source inputs needed from the user to continue lawfully.
 
 ## Investigation report
 
