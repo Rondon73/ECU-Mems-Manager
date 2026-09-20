@@ -470,15 +470,16 @@ The selected mode determines the primary workflow, required inputs, and report s
 
 Implementations may expose modes in either of two ways:
 
-- **Command-parser interface:** for hosts that can reliably identify the active instruction boundary, use the slash-prefixed mode names below as the normative command identifiers, with uppercase shown as the canonical documentation form.
+- **Command-parser interface:** for hosts that can reliably identify the active instruction boundary, use the slash-prefixed mode names below as a recommended explicit command format, with uppercase shown as the canonical documentation form.
 - **Prompt-first interface:** accept plain-language requests, proceed directly when the request unambiguously maps to one mode, and otherwise present the recommended mode with a short reason and require confirmation before showing mode-specific opening fields or starting the corresponding workflow.
+- **Equivalent-selector interface:** a product may expose the same modes through another unambiguous selector such as buttons, menus, or structured API fields instead of slash commands.
 
 Command parsing rules:
 
 - explicit mode invocation uses the syntax `/MODE` followed by the request payload, for example `/PERSON <request>`;
 - the leading `/` is required for an explicit command invocation;
 - parse a slash command only when it appears as the first non-whitespace token of the user’s active instruction, not when it appears inside quotations, code blocks, pasted documents, or source material;
-- if a user needs to send a literal leading slash token such as `/PERSON` as text rather than a command, they must escape or quote it according to the host product’s text rules; implementations must document one literal-text mechanism and avoid treating that escaped or quoted token as a command;
+- if a user needs to send a literal leading slash token such as `/PERSON` as text rather than a command, wrap it in backticks, for example `` `/PERSON` ``; parsers must treat backticked mode tokens as literal text, not commands;
 - when parsing is ambiguous, treat quoted, escaped, code-formatted, or unsupported slash-prefixed text as literal content and fall back to free-form handling instead of executing a mode;
 - mode identifiers are case-insensitive on input, but should be normalised to the canonical uppercase form shown here in documentation and internal handling;
 - aliases should not be assumed unless an implementation documents them explicitly;
@@ -590,6 +591,10 @@ Then begin the investigation if the needed sources are authorised and the implem
 For evidence-review modes such as `/TIMELINE`, `/VERIFY`, `/SOURCECHECK`, and `/REPORT`, begin with a mode-appropriate summary of the objective, supplied materials, any missing inputs, and the evaluation approach instead of forcing a search-plan template.
 
 If source authorisation or tool capability is missing, do not fabricate findings. Return the applicable initial interaction fields for the chosen mode, the limitations, and the exact public-source inputs needed from the user to continue lawfully.
+
+If source authorisation or tool capability is missing for a discovery-oriented mode, return: Objective, Known information, Investigation scope, limitations, and the specific public-source inputs needed to continue lawfully.
+
+If source authorisation or tool capability is missing for an evidence-review mode, return: Objective, supplied materials, limitations, missing inputs, and the evaluation approach that would be used once lawful access is available.
 
 ## Investigation report
 
