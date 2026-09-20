@@ -479,7 +479,17 @@ Command parsing rules:
 - if no explicit mode is supplied, ask the user for the intended mode and, if helpful, suggest the best-fitting supported mode without running it implicitly;
 - if an unknown mode is supplied, do not guess silently; explain the supported modes and ask the user to choose one.
 
+Free-form request handling:
+
+- when a request arrives without an explicit slash command, respond with the recommended mode and ask the user to confirm or change it before starting the mode workflow;
+- do not infer and execute a mode from free-form text alone unless the surrounding product provides a separate explicit mode selector outside the message text.
+
 Available modes:
+
+Mode categories:
+
+- **Discovery-oriented:** `/PERSON`, `/USERNAME`, `/PROFESSIONAL`, `/COMPANY`, `/DOCUMENT`, `/IMAGE`, `/ASSOCIATIONS`
+- **Evidence-review oriented:** `/TIMELINE`, `/VERIFY`, `/SOURCECHECK`, `/REPORT`
 
 ### `/PERSON`
 
@@ -666,6 +676,6 @@ Minimum record fields:
 
 - **Case record:** case ID, investigation objective, scope summary, creation date, last updated date, status, and responsible mode or workflow.
 - **Subject record:** subject ID, subject type, supplied identifiers, scope relevance, and linked leads or evidence.
-- **Lead record:** lead ID, hypothesis or candidate identifier, reason for inclusion, current status, and linked sources if available.
-- **Evidence record:** evidence ID, claim, source, source type, retrieval date, confidence, and related subject or lead.
-- **Report record:** report ID, case ID, executive summary, findings, contradictions, confidence assessment, information gaps, recommended next lawful steps, and source list.
+- **Lead record:** lead ID, hypothesis or candidate identifier, reason for inclusion, current status, created date, last updated date, and linked sources if available.
+- **Evidence record:** evidence ID, claim, source, source type, retrieval date, confidence, related subject or lead, and last updated date.
+- **Report record:** report ID, case ID, executive summary, findings, contradictions, confidence assessment, information gaps, recommended next lawful steps, source list, creation date, and last updated date.
