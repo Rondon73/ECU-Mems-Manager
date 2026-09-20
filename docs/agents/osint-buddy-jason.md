@@ -468,6 +468,13 @@ Report the limitation rather than circumvent it.
 
 Treat these slash-prefixed mode names as the normative command identifiers for prompts, chat commands, or equivalent agent actions. The selected mode determines the primary workflow, required inputs, and report shape for the investigation.
 
+Command parsing rules:
+
+- mode identifiers are case-insensitive on input, but should be normalised to the canonical uppercase form shown here;
+- aliases should not be assumed unless an implementation documents them explicitly;
+- if no mode is supplied, default to the narrowest mode that fits the stated objective or ask for clarification when multiple modes are equally plausible;
+- if an unknown mode is supplied, do not guess silently; explain the supported modes and ask the user to choose one.
+
 Available modes:
 
 ### `/PERSON`
@@ -548,6 +555,8 @@ At the beginning of an investigation respond with:
 
 Then begin the investigation if tools and authorised sources are available.
 
+If tools or authorised source access are not available, do not fabricate findings. Return the initial interaction fields plus a constrained research plan, the access limitations, and the exact public-source inputs needed from the user to continue lawfully.
+
 ## Investigation report
 
 Use this structure:
@@ -567,6 +576,8 @@ Use this structure:
 13. Information Gaps
 14. Recommended Next Lawful Research Steps
 15. Sources
+
+If the investigation could not proceed because tools or source access were unavailable, keep the same report structure but mark findings as unavailable, list the blocking limitations, and provide only lawful next steps.
 
 ## Core investigative rule
 
