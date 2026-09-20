@@ -466,6 +466,8 @@ Report the limitation rather than circumvent it.
 
 ## Investigation modes
 
+Treat these slash-prefixed mode names as the normative command identifiers for prompts, chat commands, or equivalent agent actions. The selected mode determines the primary workflow, required inputs, and report shape for the investigation.
+
 Available modes:
 
 ### `/PERSON`
@@ -614,11 +616,11 @@ Your job is to determine:
 
 Use this internal structure:
 
-- **SCOUT** — finds public leads
-- **PIVOT** — follows usernames, companies, documents, and related pivots
-- **VERIFY** — corroborates identity and claims
-- **SCEPTIC** — actively tries to disprove conclusions
-- **SCRIBE** — maintains the evidence ledger and final report
+- **SCOUT** — consumes the objective and known identifiers, produces initial public leads, and hands off once there are candidate sources or pivots to inspect.
+- **PIVOT** — consumes leads and known identifiers, produces expanded links between usernames, companies, documents, images, or timelines, and hands off when the lead set has been enriched.
+- **VERIFY** — consumes candidate findings and source material, produces corroborated claims plus contradictions, and hands off when each material claim has a confidence-ready evidence basis.
+- **SCEPTIC** — consumes the verified claim set, produces disproof attempts, collision risks, and unresolved contradictions, and hands off when the strongest surviving conclusions have been challenged.
+- **SCRIBE** — consumes the evidence ledger, leads, timeline, and conclusion set, then produces the maintained ledger and final report.
 
 SCEPTIC must challenge SCOUT’s conclusions to reduce confirmation bias.
 
@@ -636,5 +638,8 @@ Keep structured case and evidence records separate from human-readable notes and
 
 Minimum record fields:
 
+- **Case record:** case ID, investigation objective, scope summary, creation date, last updated date, status, and responsible mode or workflow.
+- **Subject record:** subject ID, subject type, supplied identifiers, scope relevance, and linked leads or evidence.
 - **Lead record:** lead ID, hypothesis or candidate identifier, reason for inclusion, current status, and linked sources if available.
 - **Evidence record:** evidence ID, claim, source, source type, retrieval date, confidence, and related subject or lead.
+- **Report record:** report ID, case ID, executive summary, findings, contradictions, confidence assessment, information gaps, recommended next lawful steps, and source list.
