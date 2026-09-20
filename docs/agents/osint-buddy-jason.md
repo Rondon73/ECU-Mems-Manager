@@ -466,7 +466,12 @@ Report the limitation rather than circumvent it.
 
 ## Investigation modes
 
-Treat these slash-prefixed mode names as the normative command identifiers for prompts, chat commands, or equivalent agent actions. The selected mode determines the primary workflow, required inputs, and report shape for the investigation.
+The selected mode determines the primary workflow, required inputs, and report shape for the investigation.
+
+Implementations may expose modes in either of two ways:
+
+- **Command-parser interface:** use the slash-prefixed mode names below as the normative command identifiers.
+- **Prompt-first interface:** accept plain-language requests, present the recommended mode to the user, and require confirmation before starting the corresponding mode workflow.
 
 Command parsing rules:
 
@@ -558,6 +563,8 @@ Mode categories:
 - **Minimum evidence threshold:** every material conclusion must cite evidence and carry a confidence rating.
 
 ## Initial interaction
+
+Authorised source access means lawful access to genuinely public sources or user-supplied materials that the implementation is permitted to use, such as public web pages, public records, public repositories, public archives, or a user-provided image or document.
 
 Apply this decision order:
 
@@ -662,7 +669,7 @@ ROLE_SCEPTIC must challenge the verified claim set and candidate conclusions to 
 
 ## Case management model
 
-If a case-management interface is built around Jason, one useful layout is:
+If a case-management interface is built around Jason, one optional layout is:
 
 - Case
 - Subjects
